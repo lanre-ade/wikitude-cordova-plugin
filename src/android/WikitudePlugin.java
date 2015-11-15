@@ -45,12 +45,12 @@ import com.wikitude.phonegap.WikitudePlugin.ArchitectViewPhoneGap.OnKeyUpDownLis
 
 /**
  * Basic PhoneGap Wikitude ARchitect Plugin
- * 
+ *
  * You must add "<plugin name="WikitudePlugin" value="com.wikitude.phonegap.WikitudePlugin"/>"
  * in config.xml to enable this plug-in in your project
- * 
+ *
  * Also ensure to have wikitudesdk.jar in your libs folder
- * 
+ *
  * Note:
  * This plug-in is written under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.html
@@ -86,7 +86,7 @@ public class WikitudePlugin extends CordovaPlugin implements ArchitectUrlListene
 	 * inject location information
 	 */
 	private static final String	ACTION_SET_LOCATION			= "setLocation";
-	
+
 	/**
 	 * inject location information
 	 */
@@ -136,26 +136,26 @@ public class WikitudePlugin extends CordovaPlugin implements ArchitectUrlListene
 	 * callback-id of "open"-action method
 	 */
 	private CallbackContext		openCallback				= null;
-	
+
 	/**
 	 * last known location of the user, used internally for content-loading after user location was fetched
 	 */
 	protected Location lastKnownLocaton;
-	
+
 
 	/**
 	 * sample location strategy
 	 */
 	protected ILocationProvider				locationProvider;
-	
-	
+
+
 	/**
 	 * location listener receives location updates and must forward them to the architectView
 	 */
 	protected LocationListener locationListener;
-	
+
 	private boolean useCustomLocation						= false;
-	
+
 
 	@Override
 	public boolean execute( final String action, final JSONArray args, final CallbackContext callContext ) {
@@ -203,7 +203,7 @@ public class WikitudePlugin extends CordovaPlugin implements ArchitectUrlListene
 			}
 			return true;
 		}
-		
+
 		if (WikitudePlugin.ACTION_CAPTURE_SCREEN.equals(action) ) {
 			if (architectView!=null) {
 
@@ -211,7 +211,7 @@ public class WikitudePlugin extends CordovaPlugin implements ArchitectUrlListene
 
 				try {
 					captureMode = ( args.getBoolean( 0 )) ? ArchitectView.CaptureScreenCallback.CAPTURE_MODE_CAM_AND_WEBVIEW : ArchitectView.CaptureScreenCallback.CAPTURE_MODE_CAM;
-					
+
 				} catch (Exception e) {
 					// unexpected error;
 				}
@@ -225,9 +225,9 @@ public class WikitudePlugin extends CordovaPlugin implements ArchitectUrlListene
 				}
 
 				final String fileName = name;
-				
+
 				architectView.captureScreen(captureMode, new CaptureScreenCallback() {
-					
+
 					@Override
 					public void onScreenCaptured(Bitmap screenCapture) {
 						final File screenCaptureFile;
@@ -243,7 +243,7 @@ public class WikitudePlugin extends CordovaPlugin implements ArchitectUrlListene
 								File screenCapturePath = new File (fileName);
 								if (screenCapturePath.isDirectory()) {
 									screenCaptureFile = new File (screenCapturePath, name);
-								} else { 
+								} else {
 									screenCaptureFile = screenCapturePath;
 								}
 							}
@@ -254,7 +254,7 @@ public class WikitudePlugin extends CordovaPlugin implements ArchitectUrlListene
 							screenCapture.compress(Bitmap.CompressFormat.JPEG, 90, out);
 							out.flush();
 							out.close();
-							
+
 							ContentValues values = new ContentValues();
 						    values.put(Images.Media.DATE_TAKEN, System.currentTimeMillis());
 						    values.put(Images.Media.MIME_TYPE, "image/jpeg");
@@ -262,14 +262,14 @@ public class WikitudePlugin extends CordovaPlugin implements ArchitectUrlListene
 
 						    Context context= cordova.getActivity().getApplicationContext();
 						    context.getContentResolver().insert(Images.Media.EXTERNAL_CONTENT_URI, values);
-							
+
 							cordova.getActivity().runOnUiThread(new Runnable() {
-								
+
 								@Override
 								public void run() {
 									final String absoluteCaptureImagePath = screenCaptureFile.getAbsolutePath();
 									callContext.success(absoluteCaptureImagePath);
-									
+
 // 								in case you want to sent the pic to other applications, uncomment these lines (for future use)
 //								final Intent share = new Intent(Intent.ACTION_SEND);
 //								share.setType("image/jpg");
@@ -281,7 +281,7 @@ public class WikitudePlugin extends CordovaPlugin implements ArchitectUrlListene
 						} catch (Exception e) {
 							callContext.error(e.getMessage());
 						}
-						
+
 					}
 				});
 				return true;
@@ -405,7 +405,7 @@ public class WikitudePlugin extends CordovaPlugin implements ArchitectUrlListene
 					if ( this.cordova != null && this.cordova.getActivity() != null ) {
 						this.useCustomLocation = true;
 						cordova.getActivity().runOnUiThread(
-//						this.cordova.getThreadPool().execute( 
+//						this.cordova.getThreadPool().execute(
 								new Runnable() {
 
 							@Override
@@ -470,7 +470,7 @@ public class WikitudePlugin extends CordovaPlugin implements ArchitectUrlListene
 				final String apiKey = params.getString( "SDKKey" );
 				final String filePath = params.getString( "ARchitectWorldURL" );
 				int featuresTmp = 0;
-				
+
 				try {
 					final JSONArray jsonArray = params.getJSONArray( "RequiredFeatures" );
 					featuresTmp = convertArFeatures(jsonArray);
@@ -478,7 +478,7 @@ public class WikitudePlugin extends CordovaPlugin implements ArchitectUrlListene
 					featuresTmp = StartupConfiguration.Features.Geo | StartupConfiguration.Features.Tracking2D;
 				}
 				final int features = featuresTmp;
-				
+
 				JSONObject startupConfigurationTmp;
 				try {
 					startupConfigurationTmp = params.getJSONObject( "StartupConfiguration" );
@@ -486,7 +486,7 @@ public class WikitudePlugin extends CordovaPlugin implements ArchitectUrlListene
 					startupConfigurationTmp = null;
 				}
 				final JSONObject startupConfiguration = startupConfigurationTmp;
-				
+
 				this.cordova.getActivity().runOnUiThread( new Runnable() {
 
 					@Override
@@ -555,7 +555,7 @@ public class WikitudePlugin extends CordovaPlugin implements ArchitectUrlListene
 	 */
 	private boolean removeArchitectView() {
 		if ( this.architectView != null ) {
-						
+
 			/* fake life-cycle calls, because activity is already up and running */
 			this.architectView.onPause();
 			this.architectView.onDestroy();
@@ -571,7 +571,7 @@ public class WikitudePlugin extends CordovaPlugin implements ArchitectUrlListene
 			this.architectView.setVisibility( View.GONE );
 			((ViewManager)this.architectView.getParent()).removeView( this.architectView );
 			this.architectView = null;
-			
+
 			WikitudePlugin.handleResumeInCordovaWebView(cordova.getActivity().getWindow().getDecorView().findViewById(android.R.id.content));
 			return true;
 		}
@@ -585,7 +585,7 @@ public class WikitudePlugin extends CordovaPlugin implements ArchitectUrlListene
 		if ( dir != null && dir.isDirectory() ) {
 			try {
 				for ( File child : dir.listFiles() ) {
- 
+
 					//first delete subdirectories recursively
 					if ( child.isDirectory() ) {
 						deletedFiles += clearCacheFolder( child, numDays );
@@ -629,7 +629,7 @@ public class WikitudePlugin extends CordovaPlugin implements ArchitectUrlListene
 	/**
 	 * Architect-Configuration required for proper set-up
 	 * @param apiKey
-	 * @param features 
+	 * @param features
 	 * @return
 	 */
 	protected StartupConfiguration getStartupConfiguration( final String apiKey, int features, JSONObject startupConfiguration ) {
@@ -660,7 +660,7 @@ public class WikitudePlugin extends CordovaPlugin implements ArchitectUrlListene
 	 */
 	private void addArchitectView( final String apiKey, String filePath, int features, JSONObject startupConfiguration) throws IOException {
 		if ( this.architectView == null ) {
-			
+
 			WikitudePlugin.releaseFocusInCordovaWebView(cordova.getActivity().getWindow().getDecorView().findViewById(android.R.id.content));
 
 			this.architectView = new ArchitectViewPhoneGap( this.cordova.getActivity() , new OnKeyUpDownListener() {
@@ -671,7 +671,8 @@ public class WikitudePlugin extends CordovaPlugin implements ArchitectUrlListene
 						if (WikitudePlugin.this.locationProvider != null) {
 							WikitudePlugin.this.locationProvider.onPause();
 						}
-						removeArchitectView();
+						//removeArchitectView();
+						cordova.getActivity().finish(); /* added to close app **/
 						return true;
 
 					} else {
@@ -684,24 +685,24 @@ public class WikitudePlugin extends CordovaPlugin implements ArchitectUrlListene
 					return architectView!=null && keyCode == KeyEvent.KEYCODE_BACK;
 				}
 			});
-			
+
 			this.architectView.setFocusableInTouchMode(true);
 			this.architectView.requestFocus();
 
 			this.locationListener = new LocationListener() {
-	
+
 				@Override
 				public void onStatusChanged( String provider, int status, Bundle extras ) {
 				}
-	
+
 				@Override
 				public void onProviderEnabled( String provider ) {
 				}
-	
+
 				@Override
 				public void onProviderDisabled( String provider ) {
 				}
-	
+
 				@Override
 				public void onLocationChanged( final Location location ) {
 					if (location!=null && !WikitudePlugin.this.useCustomLocation) {
@@ -720,20 +721,20 @@ public class WikitudePlugin extends CordovaPlugin implements ArchitectUrlListene
 			/* add content view and fake initial life-cycle */
 			(this.cordova.getActivity()).addContentView( this.architectView, new ViewGroup.LayoutParams( LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT ) );
 			(this.cordova.getActivity()).setVolumeControlStream( AudioManager.STREAM_MUSIC );
-	
+
 			/* fake life-cycle calls, because activity is already up and running */
 			this.architectView.onCreate( getStartupConfiguration( apiKey, features, startupConfiguration ) );
 			this.architectView.onPostCreate();
-	
+
 			/* register self as url listener to fwd these native calls to PhoneGap */
 			this.architectView.registerUrlListener( WikitudePlugin.this );
-	
+
 			/* load asset from local directory if prefix is used */
 			if ( filePath.startsWith( WikitudePlugin.LOCAL_ASSETS_PATH_ROOT ) ) {
 				filePath = filePath.substring( WikitudePlugin.LOCAL_ASSETS_PATH_ROOT.length() );
 			}
 			this.architectView.load( filePath );
-	
+
 			/* also a fake-life-cycle call (the last one before it is really shown in UI */
 			this.architectView.onResume();
 
@@ -742,15 +743,15 @@ public class WikitudePlugin extends CordovaPlugin implements ArchitectUrlListene
 				this.locationProvider.onResume();
 			}
 		}
-		
+
 		// hide keyboard when adding AR view on top of views
 		InputMethodManager inputManager = (InputMethodManager)
 				(this.cordova.getActivity()).getSystemService(Context.INPUT_METHOD_SERVICE);
 				    inputManager.hideSoftInputFromWindow((this.cordova.getActivity()).getCurrentFocus().getWindowToken(),
 				    InputMethodManager.HIDE_NOT_ALWAYS);
 	}
-	
-	
+
+
 	private static void releaseFocusInCordovaWebView(View rootView) {
 		if (rootView instanceof CordovaWebView) {
         ((CordovaWebView)rootView).getView().clearFocus();
@@ -759,7 +760,7 @@ public class WikitudePlugin extends CordovaPlugin implements ArchitectUrlListene
 			for (int i=0; i< childCount; i++) {
 				WikitudePlugin.releaseFocusInCordovaWebView(((ViewGroup)rootView).getChildAt(i));
 			}
-		}		
+		}
 	}
 
 	/**
@@ -767,7 +768,7 @@ public class WikitudePlugin extends CordovaPlugin implements ArchitectUrlListene
 	 * @param rootView the root view to search recursively for a CordovaWebView
 	 */
 	private static void handleResumeInCordovaWebView(final View rootView) {
-		if (rootView instanceof CordovaWebView) { 
+		if (rootView instanceof CordovaWebView) {
 			((CordovaWebView)rootView).handleResume(true);
 		}
 		else if (rootView instanceof ViewGroup) {
@@ -777,23 +778,23 @@ public class WikitudePlugin extends CordovaPlugin implements ArchitectUrlListene
 			}
 		}
 	}
-	
-	
+
+
 	protected static class ArchitectViewPhoneGap extends ArchitectView {
 		public static interface OnKeyUpDownListener {
 			public boolean onKeyDown(int keyCode, KeyEvent event);
-			
+
 			public boolean onKeyUp(int keyCode, KeyEvent event);
 		}
-		
+
 		private final OnKeyUpDownListener onKeyUpDownListener;
-		
+
 		@Deprecated
 		public ArchitectViewPhoneGap(Context context) {
 			super(context);
 			this.onKeyUpDownListener = null;
 		}
-		
+
 		public ArchitectViewPhoneGap(Context context, OnKeyUpDownListener onKeyUpDownListener) {
 			super(context);
 			this.onKeyUpDownListener = onKeyUpDownListener;
@@ -810,19 +811,19 @@ public class WikitudePlugin extends CordovaPlugin implements ArchitectUrlListene
 			// forward onKeyUp events to listener
 			return this.onKeyUpDownListener!=null &&  this.onKeyUpDownListener.onKeyUp(keyCode, event);
 		}
-		
+
 		@Override
 		protected void onFocusChanged(boolean gainFocus, int direction,
 				Rect previouslyFocusedRect) {
 			super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
-			
+
 			// ensure architectView does not loose focus on screen orientation changes etc.
 			if (!gainFocus) {
 				this.requestFocus();
 			}
 		}
 	}
-	
+
 	/**
 	 * Sample implementation of a locationProvider, feel free to polish this very basic approach (compare http://goo.gl/pvkXV )
 	 * @author Wikitude GmbH
@@ -907,7 +908,7 @@ public class WikitudePlugin extends CordovaPlugin implements ArchitectUrlListene
 			}
 		}
 	}
-	
+
 	private interface ILocationProvider {
 
 		/**
@@ -921,5 +922,5 @@ public class WikitudePlugin extends CordovaPlugin implements ArchitectUrlListene
 		public void onPause();
 
 	}
-	
+
 }

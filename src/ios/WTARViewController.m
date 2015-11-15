@@ -41,15 +41,15 @@ NSString * const WTArchitectDebugDelegateMessageKey = @"WTArchitectDebugDelegate
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
-        
+
         self.architectView = [[WTArchitectView alloc] initWithFrame:[[UIScreen mainScreen] bounds] motionManager:motionManagerOrNil];
         self.architectView.delegate = self;
         self.architectView.debugDelegate = self;
-        
+
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceivedDeviceWillResignActiveNotification:) name:UIApplicationWillResignActiveNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceivedDeviceDidBecomeActiveNotification:) name:UIApplicationDidBecomeActiveNotification object:nil];
     }
-    
+
     return self;
 }
 
@@ -65,10 +65,10 @@ NSString * const WTArchitectDebugDelegateMessageKey = @"WTArchitectDebugDelegate
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+
     [self.architectView setFrame:self.view.bounds];
     [self.view addSubview:self.architectView];
-    
+
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
 #pragma clang diagnostic ignored "-Wundeclared-selector"
@@ -79,15 +79,15 @@ NSString * const WTArchitectDebugDelegateMessageKey = @"WTArchitectDebugDelegate
         [self.architectView performSelector:@selector(setPresentingViewController:) withObject:self];
     }
 #pragma clang diagnostic pop
-    
+
     [self.architectView setShouldRotate:YES
                  toInterfaceOrientation:[[UIApplication sharedApplication] statusBarOrientation]];
-    
-    
-    UISwipeGestureRecognizer *swipeBackRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(didSwipeBack:)];
-    swipeBackRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
-    
-    [self.view addGestureRecognizer:swipeBackRecognizer];
+
+
+    // UISwipeGestureRecognizer *swipeBackRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(didSwipeBack:)];
+    // swipeBackRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
+    //
+    // [self.view addGestureRecognizer:swipeBackRecognizer];
 }
 
 - (BOOL)prefersStatusBarHidden
